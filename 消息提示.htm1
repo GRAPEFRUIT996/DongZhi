@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>消息堆叠提示效果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f5f7;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .message {
+            position: absolute;
+            padding: 14px 22px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            color: #333;
+            font-size: 15px;
+            background: hsl(calc(360 * var(--hue)), 40%, 95%);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: popUp 0.5s ease forwards, float 3s ease-in-out infinite;
+            z-index: 1;
+        }
+        /* 重点消息样式（更明显） */
+        .message.highlight {
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.2);
+            z-index: 100; /* 层级更高，显示在最上层 */
+        }
+        /* 区分不同重点消息的背景色 */
+        .message.highlight.he {
+            background: hsl(340, 60%, 93%); /* 粉色突出“何佳丽” */
+        }
+        .message.highlight.dongzhi {
+            background: hsl(200, 60%, 93%); /* 浅蓝色突出“冬至快乐” */
+        }
+        .message::before {
+            content: "提示 ";
+            color: #ff6b81;
+            font-weight: bold;
+            margin-right: 4px;
+        }
+        .message::after {
+            content: "💖";
+            margin-left: 4px;
+        }
+        @keyframes popUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 消息库：提高“何佳丽”和“冬至快乐”的占比
+        const messages = [
+            "何佳丽在我眼里是最可爱的女孩～",
+            "何佳丽在我眼里是最可爱的女孩～",
+            "何佳丽在我眼里是最可爱的女孩～",
+            "冬至快乐～",
+            "冬至快乐～",
+            "冬至快乐～",
+            "巧克力天天开心～",
+            "记得吃饺子～",
+            "我想你了～",
+            "何佳丽在我眼里是最可爱的女孩～",
+            "何佳丽在我眼里是最可爱的女孩～",
+            "冬至快乐～",
+            "冬至快乐～",
+            "巧克力天天开心～",
+            "我想你了～"
+        ];
+
+        function createMessage() {
+            const messageEl = document.createElement("div");
+            messageEl.className = "message";
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            messageEl.textContent = randomMsg;
+
+            // 重点消息加特殊样式+固定中间区域
+            if (randomMsg.includes("何佳丽在我眼里是最可爱的女孩～")) {
+                messageEl.classList.add("highlight", "he");
+                messageEl.style.left = `${Math.random() * 60 + 20}vw`;
+                messageEl.style.top = `${Math.random() * 60 + 20}vh`;
+            } else if (randomMsg.includes("冬至快乐～")) {
+                messageEl.classList.add("highlight", "dongzhi");
+                messageEl.style.left = `${Math.random() * 60 + 20}vw`;
+                messageEl.style.top = `${Math.random() * 60 + 20}vh`;
+            } else {
+                // 普通消息随机位置
+                messageEl.style.left = `${Math.random() * 80 + 10}vw`;
+                messageEl.style.top = `${Math.random() * 80 + 10}vh`;
+            }
+
+            messageEl.style.setProperty("--hue", Math.random() * 360);
+            messageEl.style.zIndex = Math.floor(Math.random() * 200);
+            document.body.appendChild(messageEl);
+
+            // 延长停留时间，确保屏幕充满
+            setTimeout(() => {
+                messageEl.style.opacity = 0;
+                setTimeout(() => messageEl.remove(), 500);
+            }, 12000);
+        }
+
+        // 提高弹出频率+初始生成更多消息
+        setInterval(createMessage, Math.random() * 800 + 400);
+        for (let i = 0; i < 25; i++) {
+            setTimeout(createMessage, i * 250);
+        }
+    </script>
+</body>
+</html>
